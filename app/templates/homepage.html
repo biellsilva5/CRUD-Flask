@@ -1,0 +1,140 @@
+{% extends 'default.html' %}
+
+{% block content %} 
+<div class="container">
+{% if current_user.is_authenticated%} 
+
+
+<p>Hello, {{ current_user.username }}! <a href="/logout">logout</a></p>
+<div class="row">
+	<div class="col-md-8">
+		<h2>Messages:</h2>
+		{% if message_r|length == 0 %}
+		<div class="alert alert-warning">Nenhuma mensagem</div>
+		{% else %}
+		<table class="table table-striped">
+		    <thead>
+		      <tr>
+		        <th>Name</th>
+		        <th>Email</th>
+		        <th>Message</th>
+		        <th>Action</th>
+		      </tr>
+		    </thead>
+		    <tbody>	
+		    {% for m in message_r %}	    
+		      <tr>		      	
+		        <td>{{m.name}}</td>
+		        <td>{{m.email}}</td>
+		        <td>{{m.message}}</td>
+		        <td><a href="/message/delete/{{m.id}}">Delete</a></td>		    
+		      </tr>
+		      {% endfor %}
+		    </tbody>
+		  </table>
+		  {% endif %}
+	</div>
+	<div class="col-md-3">
+		<h2>New user:</h2>
+		<form name="new_user" id="new_user" action="/user/new" method="POST">
+			{{ new_user_form.csrf_token }}
+			<div class="form-group">
+			    <label for="name">Username:</label>
+			    {{new_user_form.username(class="form-control", type="text", id="name")}}
+			  </div>
+			  <div class="form-group">
+			    <label for="email">Email:</label>
+			    {{new_user_form.email(class="form-control", type="email", id="email")}}
+			  </div>
+			  <div class="form-group">
+			    <label for="message">Password:</label>
+			    {{new_user_form.password(class="form-control", type="password",  id="pwd")}}
+			  </div>
+			  <button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+</div>
+
+<p></p>
+<div class="row">
+	<div class="col-md-8">
+		<h2>Users:</h2>
+		<table class="table table-striped">
+		    <thead>
+		      <tr>
+		        <th>Username</th>
+		        <th>Email</th>
+		        <th>Password</th>
+		        <th>Action</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		    {% for u in user_r %}
+		      <tr>		      	
+		        <td>{{u.username}}</td>
+		        <td>{{u.email}}</td>
+		        <td>{{u.password}}</td>
+		        <td><a href="/user/delete/{{u.id}}">Delete</a> | <a href="/user/edit/{{u.id}}">Edit</a></td>
+		      </tr>
+		     {% endfor %}
+		    </tbody>
+		  </table>
+	</div>
+</div>
+	
+
+
+
+{% else %} 
+
+
+	<h1>Envie uma mensagem</h1>
+	<div class="row">
+		<div class="col-md-6">
+
+			<form action="" method="POST">
+				{{ message_form.csrf_token }}
+				<div class="form-group">
+			    	<label for="name">Nome:</label>
+			    	{{message_form.name(class="form-control", type="text", id="name")}}
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="email">Email:</label>
+			    	{{message_form.email(class="form-control", type="email", id="email")}}
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="message">Mensagem:</label>
+			    	{{message_form.message(class="form-control", type="textarea", rows="5", id="message")}}
+			  	</div>
+			  	<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>			
+
+		<div class="col-md-2"></div>
+
+		<div class="col-md-4">
+			<p><strong>Login:</strong></p>
+			<form action="" method="POST">
+				{{ login_form.csrf_token }}
+			  	<div class="form-group">
+			    	<label for="email">Email address:</label>
+			    	{{login_form.email(class="form-control", type="email", id="email")}}
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="pwd">Password:</label>
+			    	{{login_form.password(class="form-control", type="password", id="pwd")}}
+			  	</div>
+			  	<div class="form-group form-check">
+			    	<label class="form-check-label">
+			    		{{ login_form.remember_me(class="form-check-input", type="checkbox")}} Remember me
+			    	</label>
+			  	</div>
+			  <button type="submit" class="btn btn-primary btn-lg">Login</button>
+			</form>
+		</div>			
+	</div>		 
+
+
+{% endif %}
+</div>
+{% endblock %}
